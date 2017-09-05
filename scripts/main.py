@@ -8,24 +8,17 @@ from sarima_models import Sarima_predictions, find_best_sarima, grid_search_sari
 import sys
 
 if __name__== '__main__':
-    project_name, f, season, location = sys.argv[1],sys.argv[2],int(sys.argv[3]),sys.argv[4]
-    if sys.argv[5] == 'True':
-        T_dependant = True
-    else:
-        T_dependant = False
-
-    if location == 'local':
-        p = '../../capstone_data/Azimuth/clean/{}'.format(project_name)
-    else:
-        p = project_name
+    project_name, f, season = sys.argv[1],sys.argv[2],int(sys.argv[3])
+    paath = '../../capstone_data/Azimuth/clean/{}'.format(project_name)
 
     print'get data for {}....'.format(p)
-    dp = Data_preparation(p,f,T_dependant).get_data()
+    dp = Data_preparation(path,f,T_dependant).get_data()
     # df = dp.get_data()
-    y = dp.create_variable(agg='sum',feature='power_all')
+    y = dp.create_variable(agg='sum',feature='energy_all')
     cv_folds = 25
+    combination = [0,1,2]
     model_names = ['sarima','sarimax','sarimax_v']
-    combination = [0,1]
+
 
     y_train = y[:-2*season]
     y_test = y[-2*season:]

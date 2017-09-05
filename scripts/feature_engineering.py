@@ -216,9 +216,9 @@ def outage_smoothing(df, feature, time_window):
     df[feature] = df[feature].fillna(method='ffill')
     return df
 
-def calculate_power(df):
+def calculate_energy(df):
     '''
-    Calculate total power for that site
+    Calculate total energy demand for that site
     PARAMETERS:
     -----------
     df: Pandas DataFrame with DatetimeIndex
@@ -226,10 +226,10 @@ def calculate_power(df):
     -----------
     df: Pandas DataFrame with DatetimeIndex
     '''
-    df['power_1'] = df['load_v1rms'] * df['load_i1rms']
-    df['power_2'] = df['load_v2rms'] * df['load_i2rms']
-    df['power_3'] = df['load_v3rms'] * df['laod_i3rms']
-    df['power_all'] = ( df['power_1'] +df['power_2']+df['power_3'] ) * 5./12
+    df['energy_1'] = df['load_v1rms'] * df['load_i1rms']
+    df['energy_2'] = df['load_v2rms'] * df['load_i2rms']
+    df['energy_3'] = df['load_v3rms'] * df['laod_i3rms']
+    df['energy_all'] = ( df['energy_1'] +df['energy_2']+df['energy_3'] ) * 5./12
     return df
 
 if __name__=='__main__':
@@ -241,9 +241,9 @@ if __name__=='__main__':
     path = '../capstone_data/Azimuth/clean/{}'.format(filename)
     df = get_clean_data(path, 't')
     df = get_relay_start(df)
-    df = calculate_power(df)
+    df = calculate_energy(df)
     if smooth == 'y':
-        df = outage_smoothing(df, 'power_all', (2*24))
+        df = outage_smoothing(df, 'energy_all', (2*24))
 
     # created shifted features
     print 'creating shifted features...'
