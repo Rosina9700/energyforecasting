@@ -41,6 +41,16 @@ def line_plot_predictions(project_name, forecasts, true):
     pass
 
 def cross_val_scores(df,var=False):
+    '''
+    Extracts the cross validation RMSE scores from the results dataframe which has been
+    collected by the data wrangling Results_data class.
+    PARAMETERS
+    ----------
+    df: Pandas dataframe
+    RETURNS
+    -------
+    results: OrderedDict
+    '''
     cross_val_scores = {}
     cross_val_scores['baseline1'] = df.iloc[0]['baseline_previous']
     cross_val_scores['baseline2'] = df.iloc[0]['baseline_averages']
@@ -54,6 +64,15 @@ def cross_val_scores(df,var=False):
     return results
 
 def plot_cross_val_score(df):
+    '''
+    Plots a bar chart of the cross validation scores for a single project
+    PARAMETERS
+    ----------
+    df: Dictionary
+    RETURNS
+    -------
+    Matplotlib plot
+    '''
     results = cross_val_scores(df)
     values = [v/1000. for v in results.values()]
     plt.figure(figsize=(8,6))
@@ -65,6 +84,16 @@ def plot_cross_val_score(df):
     pass
 
 def plot_norm_cross_val_score(scores):
+    '''
+    Plots a bar chart of the relative normalised cross validation scores for all models,
+    calcaluated across all sites
+    PARAMETERS
+    ----------
+    scores = List of lists
+    RETURNS
+    -------
+    Matplotlib plot
+    '''
     font_size=30
     width =  0.6
     scaled_rmses = np.asarray([s[1].values() for s in scores])
@@ -79,6 +108,17 @@ def plot_norm_cross_val_score(scores):
     pass
 
 def plot_all_cross_val_score(results, project_type):
+    '''
+    Plots a bar chart of the relative normalised cross validation scores for all models,
+    calcaluated across all sites
+    PARAMETERS
+    ----------
+    results: List of dataframes
+    project_type: Dictionary
+    RETURNS
+    -------
+    Matplotlib plot
+    '''
     fig, axes = plt.subplots(2,3, figsize=(28,15),sharex=True)
     font_size=30
     width =  0.6

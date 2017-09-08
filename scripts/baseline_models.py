@@ -7,13 +7,30 @@ if module_path not in sys.path:
     sys.path.append(module_path)
 
 class Baseline_average(object):
+    '''
+    Class for the baseline average model which forecasts
+    the average energy demand for the given time interval
+    '''
     def __init__(self, freq):
+        '''
+        Initializations of the class, requires the frequency
+        of the timeseries data
+        PARAMETERS
+        ----------
+        freq: String (D or H for day or hour respectively)
+        '''
         self.averages = None
         self.freq = freq
         self.score_ = None
         self.y_train = None
 
     def fit(self, y):
+        '''
+        Fit the model to the training data
+        PARAMETERS
+        ----------
+        y: Pandas series
+        '''
         self.y_train = y
         dateindex = y.index
         y['dayofweek'] = dateindex.dayofweek
@@ -27,6 +44,17 @@ class Baseline_average(object):
         return self
 
     def predict(self, start, periods):
+        '''
+        Gives the predicts from a start timestamp over a
+        given number of periods
+        PARAMETERS
+        ----------
+        start: String in yyyy-mm-dd format
+        periods: integer
+        RETURNS
+        -------
+        predictions: Pandas Series
+        '''
         date_index = pd.date_range(start,periods=periods,freq=self.freq)
         if self.freq == 'H':
             predictions = pd.Series(date_index).apply(lambda x: self.averages[x.dayofweek][x.hour])
@@ -34,13 +62,17 @@ class Baseline_average(object):
             predictions = pd.Series(date_index).apply(lambda x: self.averages[x.dayofweek])
         return predictions
 
-    def score(self, y):
-        predictions = self.predict(y.index.min().strftime('%Y-%m-%d %H:%M:00'), len(y)).values
-        true = y.values
-        rmse = np.sqrt(((true - predictions)**2).mean())
-        return rmse
-
     def forecast(self,steps):
+        '''
+        forecasts an out of bag forecast for the time intervals
+        immediately following the training data
+        PARAMETERS
+        ----------
+        steps: Integer
+        RETURNS
+        -------
+        forecasts: Numpy array
+        '''
         start_date = self.y_train.index.max()
         forecasts = np.zeros(steps)
         for i in xrange(1,steps+1):
@@ -58,6 +90,10 @@ class Baseline_average(object):
 
 
 class Baseline_previous(object):
+    '''
+    Class for the baseline previous model which forecasts
+    the previous energy demand for the given time interval
+    '''
     def __init__(self):
         self.y_train = None
 
@@ -66,6 +102,16 @@ class Baseline_previous(object):
         return self
 
     def forecast(self, steps):
+        '''
+        forecasts an out of bag forecast for the time intervals
+        immediately following the training data
+        PARAMETERS
+        ----------
+        steps: Integer
+        RETURNS
+        -------
+        forecasts: Numpy array
+        '''
         forecasts = np.zeros(steps)
         for i in xrange(0,steps):
             forecasts[i] = self.y_train.values[-1]
@@ -78,7 +124,8 @@ def baseline_rolling_predictions(model, y, end, window):
     -----------
     model: Baseline Class Object
     y: Pandas Series
-    end: Integer
+    end: Integer, end of the training dataset
+    window: Integer, window to produce forecasts for
     RETURNS:
     -----------
     forecast: Numpy array

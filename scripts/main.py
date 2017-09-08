@@ -8,18 +8,26 @@ from sarima_models import Sarima_predictions, find_best_sarima, grid_search_sari
 import sys
 
 if __name__== '__main__':
+    '''
+    Main scripts that calls in featurized data and conducts cross validation for
+    all the different models. Arguments to call the scripts with:
+    project_name: String
+    f: String (H or D)
+    Season: Integer
+    '''
     project_name, f, season = sys.argv[1],sys.argv[2],int(sys.argv[3])
-    paath = '../../capstone_data/Azimuth/clean/{}'.format(project_name)
+    path = '../../capstone_data/Azimuth/clean/{}'.format(project_name)
 
     print'get data for {}....'.format(p)
     dp = Data_preparation(path,f,T_dependant).get_data()
-    # df = dp.get_data()
     y = dp.create_variable(agg='sum',feature='energy_all')
+
+    # Define the folds and model to look at. Note that 0 = sarima, 1 = sarimax and 2 = sarimax with variable beta coefficients
     cv_folds = 25
     combination = [0,1,2]
     model_names = ['sarima','sarimax','sarimax_v']
 
-
+    # Create train/test split
     y_train = y[:-2*season]
     y_test = y[-2*season:]
 
@@ -50,6 +58,7 @@ if __name__== '__main__':
     params = (p,d,q)
     best_models = find_best_sarima(y_train, params, season, combination, k=cv_folds)
 
+    print 'Extracting cross val results and testing of test set'
     to_print = ['project;model;test;baseline_previous;baseline_averages;sarimax;sarimax_aic;sarimax_params']
     test = 1
     train = 0
@@ -70,6 +79,7 @@ if __name__== '__main__':
         to_print.append(train_results)
         to_print.append(test_results)
 
+    print 'Saving results...'
     now = datetime.now().strftime('%m_%d_%H_%M_%S')
     filename = 'output_{}_{}.csv'.format(project_name,now)
     with open(filename, "wb") as file:
