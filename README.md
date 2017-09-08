@@ -16,9 +16,10 @@ This project also uses meteorological data from the NASA MERRA2 dataset.
 ## Results Overview
 In general the SARIMA/SARIMAX models outperformed the baseline models, with the SARIMAX performing best for day ahead forecasts and both performing comparably for the hour ahead forecasting.
 Day ahead forecasting:
-![Relative Cross Validation RMSE for Daily Forecast](https://github.com/Rosina9700/energyforecasting/blob/master/results/rmse_daily.png "Relative Cross Validation RMSE for Daily Forecast")
 
-! [Relative Cross Validation RMSE for Hourly Forecast](https://github.com/Rosina9700/energyforecasting/blob/master/results/rmse_hourly.png "Relative Cross Validation RMSE for Hourly Forecast")
+![Relative Cross Validation RMSE for Daily Forecast](https://github.com/Rosina9700/energyforecasting/blob/master/results/rmse_daily.png =50x50 "Relative Cross Validation RMSE for Daily Forecast")
+
+![Relative Cross Validation RMSE for Hourly Forecast](https://github.com/Rosina9700/energyforecasting/blob/master/results/rmse_hourly.png =50x50 "Relative Cross Validation RMSE for Hourly Forecast")
 
 
 
