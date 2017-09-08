@@ -1,2 +1,3 @@
 # ignore files of this type
 .pyc
+/.ipynb_checkpoints
