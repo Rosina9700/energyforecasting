@@ -9,43 +9,35 @@ if module_path not in sys.path:
     sys.path.append(module_path)
 
 def line_plot_predictions(project_name, forecasts, true):
+    '''
+    Function plots the forecasts for the different models against the
+    measured data
+    parameters
+    -----------
+    project_name: String
+    forecasting: List of lists
+    true: Numpy array
+    RETURNS
+    --------
+    Matplotlib plot
+    '''
     x_axis = true.index.values
-    fig, axes = plt.subplots(len(forecasts), sharex=True, sharey=True, figsize=(15,6))
+    fig, axes = plt.subplots(len(forecasts), sharex=True, sharey=True, figsize=(15,8))
     title = 'Model performance on {}'.format(project_name)
     fig.suptitle(title)
-    fig.text(0.5, 0.02, 'Time', ha='center')
-    fig.text(0.04, 0.5, 'Energy demand (Wh)', va='center', rotation='vertical')
-    # plt.figure(figsize=(20,8))
-    # ax[0].plot(x_axis, true.ix[:,0].values, label='measured')
-    color = ['m','b','g','c','y']
+    fig.text(0.5, 0.01, 'Time', ha='center')
+    fig.text(0.00, 0.5, 'Energy demand (Wh)', va='center', rotation='vertical')
+    plt.figure(figsize=(20,8))
+    color = ['m','b','g','r','y']
     counter = 0
     for ax, f in zip(axes,forecasts):
-        ax.plot(x_axis, true.ix[:,0].values,label='measured',color='r' ,alpha=0.75)
+        ax.plot(x_axis, true.ix[:,0].values,label='measured',color='k' ,alpha=0.75)
         ax.plot(x_axis, f[1], '--',label=f[0], color=color[counter], alpha=0.75)
         ax.fill_between(x_axis, true.iloc[:,-1]*true.ix[:,0], alpha=0.4, label='Weekday')
-        ax.legend(loc=1)
-        # ax.set_xlabel('Time')
-        # ax.set_ylabel('Energy Demand (Wh)')
+        ax.set_ylim(ymin=np.min(true.ix[:,0].values)/1.2)
+        ax.legend(loc=2)
         counter += 1
     plt.show()
-    pass
-
-def scatter_plot_predictions(forecasts, true):
-    x_axis = true.index.values
-    fig, axes = plt.subplots(1,len(forecasts), sharex=True, sharey=True, figsize=(30,5))
-    fig.suptitle('Model performance on test data')
-    fig.text(0.5, 0.02, 'Measured energy demand values', ha='center')
-    fig.text(0.04, 0.5, 'Forecasted energy demand (Wh)', va='center', rotation='vertical')
-    # plt.figure(figsize=(20,8))
-    # ax[0].plot(x_axis, true.ix[:,0].values, label='measured')
-    color = ['m','b','g','o']
-    counter = 0
-    for ax, f in zip(axes,forecasts):
-        ax.scatter(true.ix[:,0].values, f[1],label=f[0],color=color[counter] ,alpha=0.75)
-        ax.legend(loc=1)
-        # ax.set_xlabel('Time')
-        # ax.set_ylabel('Energy Demand (Wh)')
-        counter += 1
     pass
 
 def cross_val_scores(df,var=False):
@@ -69,5 +61,36 @@ def plot_cross_val_score(df):
     plt.xticks(range(len(results)), results.keys(),rotation=45)
     plt.ylabel('Cross validation RMSE [kWh]')
     plt.title(df.iloc[0]['project'])
+    plt.show()
+    pass
+
+def plot_norm_cross_val_score(scores):
+    font_size=30
+    width =  0.6
+    scaled_rmses = np.asarray([s[1].values() for s in scores])
+    fig, ax = plt.subplots(figsize=(10,8))
+    ax.bar(range(4),scaled_rmses.mean(axis=0),0.5, color='b', alpha=0.5, align='center')
+    ax.set_xticks(range(4))
+    ax.set_xticklabels(scores[0][1].keys(),rotation=45,fontsize=font_size)
+    ax.tick_params(labelsize=20)
+    ax.set_ylabel('Relative RMSE', fontsize=font_size-5)
+    ax.set_title('Cross validation RMSE comparison',fontsize=font_size)
+    plt.show()
+    pass
+
+def plot_all_cross_val_score(results, project_type):
+    fig, axes = plt.subplots(2,3, figsize=(28,15),sharex=True)
+    font_size=30
+    width =  0.6
+    for df, ax in zip(results, axes.ravel()):
+        scores = cross_val_scores(df)
+        values = [v/1000. for v in scores.values()]
+        ax.bar(range(len(scores)),values, width, color='b', alpha=0.5,align='center')
+        ax.set_xticks(range(len(scores)))
+        ax.set_xticklabels(scores.keys(),rotation=45,fontsize=font_size)
+        ax.tick_params(labelsize=25)
+        ax.set_ylabel('Cross validation RMSE [kWh]', fontsize=font_size-5)
+        ax.set_title(project_type[df['project'].values[0]],fontsize=font_size+5)
+    plt.tight_layout()
     plt.show()
     pass

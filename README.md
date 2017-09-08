@@ -1,7 +1,7 @@
 # Energy Demand Forecasting using Sarimax models
-This project was completed as a capstone project for the Galvanize Data Science Immersive program. The aim of this repo is to build and compare energy demand forecasting models using SARIMA timeseries models.
+This project was completed as a capstone project for the Galvanize Data Science Immersive program. The aim of this repo is to build and compare energy demand forecasting models using SARIMA timeseries models. SARIMA and SARIMAX hour and day ahead forecasting were compared against two baseline models.
 
-## Introduction
+## Motivation
 Distributed Energy Resources such as solar and storage are disrupting our traditional
 energy supply and to ensure that they are being used to their full potential,
 energy demand forecasting is critical. Knowledge of future energy demand allows
@@ -12,6 +12,10 @@ offering the most value to the customers.
 I am working with 5 minute energy demand data (voltage and current for all three phases) from an energy service provider currently operating in Kenya and Ghana. For confidentiality reasons, this data and related EDA plots have not been included in this repo.
 
 This project also uses meteorological data from the NASA MERRA2 dataset.
+
+## Results Overview
+In general the SARIMA/SARIMAX models outperformed the baseline models, with the SARIMAX performing best for day ahead forecasts and both performing comparably for the hour ahead forecasting.
+
 
 ## Approach
 In the study, I developed a process to

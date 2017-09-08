@@ -19,10 +19,10 @@ class Baseline_average(object):
         y['dayofweek'] = dateindex.dayofweek
         if self.freq == 'H':
             y['hour'] = dateindex.hour
-            self.averages = y.groupby(['dayofweek','hour'])['energy_all'].mean()
+            self.averages = y.groupby(['dayofweek','hour'])['power_all'].mean()
             y.drop(['dayofweek','hour'],axis=1, inplace=True)
         elif self.freq == 'D':
-            self.averages = y.groupby('dayofweek')['energy_all'].mean()
+            self.averages = y.groupby('dayofweek')['power_all'].mean()
             y.drop('dayofweek',axis=1, inplace=True)
         return self
 
